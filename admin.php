@@ -31,7 +31,7 @@ $user_id = startSession();
  * @abstract Administration index. Script that shows available tables and reports
  */
 error_reporting(1);
-//includes
+//a lot of includes
 require_once (".htconnect.php");
 require_once ("resClass.php");
 require_once ("dispClass.php");
