@@ -48,7 +48,7 @@ $res->userInfo($user_id);
 if($res->getUserLevel()!=2){
 	echo "<div id=accountContainer class=account>";
 	echo "<table>";
-	echo "<tr><td>Select an account to proceed</td></tr>";
+	echo "<tr><td colspan=2>Select an account to proceed</td></tr>";
 	if($res->getUserLevel()==0){ //Is this an administrator?
 		$sql=$conn->prepare("SELECT account_id, account_number, account_project, account_budget FROM $database.account WHERE account_start<NOW() AND account_end>NOW() AND account_id<>0 ORDER BY account_number");
 			} else { //is this a manager?

@@ -357,7 +357,7 @@ $(document).ready(function(){
 			arr[1]=Number($("#quantity_"+options.row).val());
 		//	alert(arr);
 			//ajax request->send entry id through ajax and add it to basket
-			var url = "requisitions.php";
+			var url = "requisitions/requisitions.php";
 			//ajax request with post variables (NICE)
 			$.get(url,{
 				  type:0,
@@ -421,6 +421,8 @@ $(document).ready(function(){
 				        }
 				        
 			        }
+			           
+			        
 			        //check if an account has been selected
 			        if($("#accountList").get(0).selectedIndex==0){
 			        	alert("You must select a valid account to proceed");
@@ -432,8 +434,8 @@ $(document).ready(function(){
 							  stype:$("#submit").attr("name"),
 							  account:$("#accountList").val(),
 							  val:arr,
-							  ammount:total},		
-							//retrieve that from ajax request 
+							  ammount:total},
+							  //retrieve that from ajax request 
 							//select another div to display the notification
 							function(data){
 								  alert(data);
@@ -537,15 +539,6 @@ function getUserLevel(){
 	url="requisitions.php?type=7";
 	var str=ajaxRequest(url);
 	return str;
-}
-
-function add_to_favourites(id){
-	var resp=confirm("Sure you want to add this item to your favourites?");
-	if(resp){
-		url="requisitions/requisitions.php?type=9&id="+id;
-		var str=ajaxRequest(url);
-		alert(str);
-	}
 }
 
 function exportExcel(grid)

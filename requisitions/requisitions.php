@@ -37,9 +37,6 @@ if(isset($_GET['type'])){
 		case 8:
 			newVendor($user_id);
 			break;
-		case 9:
-			addFavourite($user_id);
-			break;
 	}
 
 }
@@ -69,11 +66,10 @@ function addToBasket($user_id){
 	$req=new reqClass(); 	//call requisitions class
 	
 	//create a new basket if it doesn't exist
-	$req->createBasket($user_id);
+	$req->createBasket($user_id,"");
 	
 	//which product type is this??
 	$sql = $conn->prepare("SELECT type_id, type_name FROM ".$conn->getDatabase().".type WHERE type_id IN (SELECT ".$table."_type FROM ".$conn->getDatabase().".$table WHERE ".$table."_id=$item)");
-	//echo $sql->queryString;
 	try{
 		$sql->execute();
 		$row=$sql->fetch();
@@ -173,12 +169,32 @@ function submitBasket($user_id){
 	//other classes
 	$req=new reqClass();
 	$mail=new mailClass();
+	$dpt=array();
 	
 	//URL variables
-	if(isset($_GET['val']))		$arr=$_GET['val'];
-	if(isset($_GET['stype']))	$type=$_GET['stype'];
-	if(isset($_GET['account']))	$account=$_GET['account'];
-	if(isset($_GET['ammount']))	$total=$_GET['ammount'];
+	if(isset($_GET['val']))			$arr=$_GET['val'];
+	if(isset($_GET['stype']))		$type=$_GET['stype'];
+	if(isset($_GET['account']))		$account=$_GET['account'];
+	if(isset($_GET['ammount']))		$total=$_GET['ammount'];
+	//if(isset($_GET['department']))	$department_name=$_GET['department'];
+	
+	$clause="";//initialize variable to build clause
+	foreach($arr as $request_id){
+		//which department is this from????
+		$sql=$conn->query("SELECT department_id, department_name FROM department,request,basket WHERE basket_user=department_id AND request_basket=basket_id AND request_id=$request_id");
+		$row=$sql->fetch();
+		$dpt[]=$row[0];
+		$clause.= " $request_id,";
+	}
+	//check if this request is allowed or not
+	if(sizeof(array_count_values($dpt))==1){ //all request from the same department
+		$department_id=$dpt[0];
+	} else {
+		echo "You cannot order items from different departments.";
+		exit();
+	}
+	//to be used in query down below
+	$clause=substr($clause,0,strlen($clause)-1);
 	
 	//call function to check if there is money left in the account
 	$valid_account=checkBudget($account, $total);
@@ -187,30 +203,25 @@ function submitBasket($user_id){
 		exit();
 	}
 	//get current basket_id
-	$basket_id=$req->actBasket($type, $user_id);
+	$basket_id=$req->actBasket($type, $department_id);
 	//update this basket	
 	$sql=$conn->prepare("UPDATE basket SET basket_state=1, basket_account=(SELECT account_id FROM $database.account WHERE account_number='$account'), basket_submit_date=NOW() WHERE basket_id=$basket_id");
-	//echo $sql->queryString;
 	try{
 		$sql->execute();
 	} catch (Exception $e) {
 		echo $e->getMessage();
 	}
 	//Create new basket
-	$req->createBasket($user_id);
+	$req->createBasket($user_id, $department_id);
 	//get nwe basket id (cannot use lastInsertId method as it returns 0)
-	$newBasket=$req->actBasket($type, $user_id);
+	$newBasket=$req->actBasket($type, $department_id);
 	//build clause to create new basket
-	$clause="";//initialize variable to build clause
-	foreach($arr as $request_id){
-		$clause.= " $request_id,";
-	}
-	$clause=substr($clause,0,strlen($clause)-1);
+
 	//add the remaining request to the recently created basket
 	$sql=$conn->prepare("UPDATE request SET request_basket=$newBasket WHERE request_id NOT IN ($clause) AND request_basket=$basket_id");
 	try{
 		$sql->execute();
-		//echo $sql->queryString;
+		
 		echo "Basket successfully submitted!";
 		$subject="Requisition System: New Basket";
 		$msg="Basket submitted at ".date("Y-M-d H:i:s")."\n\n";
@@ -503,24 +514,6 @@ function displayMenu($user_id){
 	echo "</td></tr>";
 	$config->checkPlugins();
 	echo "</table>";
-}
-
-function addFavourite($user_id){
-	//call database class (handle connections)
-	$db = new dbConnection();
-	$database=$db->getDatabase();
-	//url variables
-	if(isset($_GET['id']))	$item=$_GET['id'];
-	
-	try{
-		$sql=$db->query("INSERT INTO favourite (favourite_product,favourite_dep) SELECT '$item', user_dep FROM $database.user WHERE user_id=$user_id");
-	//	echo $sql->queryString;
-		echo "Item added to your favourite list";
-	} catch (Exception $e){
-		echo "Unable to add item to your favourite list";
-	}
-	
-	
 }
 
 

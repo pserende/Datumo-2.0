@@ -426,8 +426,6 @@ class dispClass{
 			} else {
 				echo "<td></td>";
 			}
-			//check if there is any specific row module for this table and database
-			$this->rowModules($objName,$row[0]);
 			//check if there is any permission for this table and user
 			//does this user have permissions to update or delete this table? if so apply checkboxes. If not, set fields as readonly
 			if($r)  {	echo "<td style='text-align:center'><input type=checkbox id=cb$i name=cb$i></td>";}
@@ -619,7 +617,7 @@ class dispClass{
 
 	
 	public function maxRows($objName, $filter, $user_id){
-		$where="";
+		$where=" WHERE ";
 		if(!$filter){
 			if($this->vars){
 				foreach($this->vars as $key=>$value){
@@ -639,7 +637,6 @@ class dispClass{
 					//building the where clause			
 					$where .= " LOWER($key)".$op."LOWER('$value') AND ";
 				}
-				$where=" WHERE ".$where;
 			}
 		} else {
 			//unserialize advanced filter array
@@ -669,14 +666,13 @@ class dispClass{
 				//clear operator
 				unset($op);
 			} 	
-			$where=" WHERE ".$where;
 		}
 		
 		//check for restraining clauses
 		$having = $this->perm->restrictAttribute($user_id, $objName);
 		if($having!="")	$where.=$having." AND";
 		//remove last 'AND ' from query
-		if($where!="") $where = substr($where,0,strlen($where)-4);
+		if($where!="" and $where!=" WHERE ") $where = substr($where,0,strlen($where)-4);
 		else $where = "";
 		//set search path to main database
 		$sql = $this->pdo->prepare("SELECT COUNT(".$objName."_id) FROM ".$this->pdo->getDatabase().".$objName $where");
@@ -853,21 +849,7 @@ class dispClass{
 		}
 		
 	}
-	
-	function rowModules($objName,$id){
-		if($this->pdo->getDatabase()=="requisitions"){
-			switch($objName){
-				case "product":
-					echo "<td align=center>";
-					//add to favourites
-					echo "<a href=javascript:void(0) onclick=add_to_favourites('$id')><img src=pics/star.png width=16px border=0 title='Add to favourites'></a>";
-					echo "</td>";
-					break;
-			}
-		}
-		
-	}
-	
+
 	public function masks($objName){
 		//set path to main schema
 		$this->pdo->dbConn();
