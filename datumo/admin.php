@@ -75,6 +75,7 @@ $tables = $admin->tableAccess($user_id);
 $table_type=$display->tableview($tables);
 $table_type=array_count_values($table_type);
 $masks=$display->getMasks();
+$maskPic=$display->getMaskPic();
 /*
 echo "<input type=button id=bugReport value='Report Bug'>";
 echo "<div id=Notification></div>";
@@ -131,8 +132,7 @@ for($j=0;$j<sizeof($type);$j++){
 			//display table or view name (or mask if it exists)
 			echo "<tr><td>";
 			//search for an associated mask
-			echo "<input type=button name=$objName id=$objName value='$masks[$i]' onclick=window.open('manager.php?table=$objName&nrows=20','_self') style='width:150px' title='".$display->getTableComment()."'>";	
-			echo "</td>";
+			echo "<input type=button name=$objName id=$objName value='$masks[$i]' class=callTables onclick=window.open('manager.php?table=$objName&nrows=20','_self') title='".$display->getTableComment()."' style='background-image:url($maskPic[$i]);'>";	
 			echo "<td><a href=javascript:void(0)>Search</a>";
 			//regular search div
 			echo "<div id='".$objName."_div' class=regular>";

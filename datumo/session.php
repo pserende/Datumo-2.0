@@ -66,12 +66,12 @@ function startSession(){
 function logout(){
 	//session_start(); //start session if it has not been started
 	session_destroy();
-	echo "<meta HTTP-EQUIV='REFRESH' content='0; url=../".$_SESSION['path']."'>";
+	echo "<meta HTTP-EQUIV='REFRESH' content='0; url=".$_SESSION['path']."'>";
 }
 
 function notlogged(){
 	session_destroy();
-	echo "We are watching you!! Return to <a href=../".$_SESSION['path'].">homepage</a>";
+	echo "We are watching you!! Return to <a href=".$_SESSION['path'].">homepage</a>";
 	//echo "<meta HTTP-EQUIV='REFRESH' content='0; url=./'>";
 	exit();
 }

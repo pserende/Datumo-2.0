@@ -46,7 +46,7 @@ class dbConnection extends PDO{
 		$this->schema = "requisitions";// Name of the schema (same as database for mysql)
 		$this->description = "datumo";
 		$this->admin = "info@cirklo.org";
-		$this->folder = "/production/datumo"; //folder where the main files of datumo are located
+		$this->folder = "/datumo/datumo"; //folder where the main files of datumo are located
 	}
 	
 	public function getFolder(){		return $this->folder;} 

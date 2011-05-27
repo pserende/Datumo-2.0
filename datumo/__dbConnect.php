@@ -1,8 +1,9 @@
 <?php
 
-if(isset($_SESSION['path']))
+if(isset($_SESSION['path']) or $_SESSION['path']!=""){
 	require_once $_SERVER["DOCUMENT_ROOT"].$_SESSION['path']."/.htconnect.php";
-else {
+	
+} else {
 	echo "Session was lost...";
 	exit();
 }

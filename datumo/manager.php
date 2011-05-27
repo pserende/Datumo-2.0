@@ -243,6 +243,13 @@ echo "</td>";
 echo "<td valign=top>";
 //display user's restrictions for this table
 $perm->tablePermissions($table, $user_id);
+//search for available modules for this table
+echo "<table >";
+echo "<tr>";
+$module=new module($table);
+echo "</tr>";
+echo "</table>";
+
 echo "<table border=0>";
 echo "<tr>";
 if($perm->getUpdate()) {echo "<td><input type=button name=upd id=upd value=Update onclick=checkfields('update','$table',$nrows,'$order','$colOrder','$stype','$pageNum')></td>";}
@@ -262,24 +269,14 @@ echo "<div id='advsearch' class=regular>";
 $search->advancedFilter($user_id,$table);
 echo "</div>";
 echo "</td>";
+echo "<td><input type=button name=legend id=legend value=Legend>";
+echo "<div id=legendiv class=regular>";
+$display->legend($table,$user_id);
+echo "</div>";
+echo "</td>";
 //print page navigation
 echo "<td>".$first.$prev." Showing page $pageNum of $maxPage pages ".$next.$last."</td>"; 
 echo "<td><b>Jump to page</b> <input type=text size=1 name=newPage id=newPage value=$pageNum><input type=button id=jump value='Go' onclick=submit('$stype','$table',$nrows,'$order','$colOrder',$('#newPage').val())></td>";
-echo "</tr>";
-echo "</table>";
-//search for available modules for this table
-echo "<table >";
-echo "<tr>";
-$module=new module($table);
-//table legend
-if($perm->getInsert()){	//only display this legend if this user has insert permissions
-	echo "<td><img src=pics/add.png width=32px></td><td>Add row to multiple insert</td>";
-	echo "<td><img src=pics/remove.png width=32px></td><td>Remove row from multiple insert</td>";
-	echo "<td><img src=pics/submit.png width=32px></td><td>Insert rows</td>";
-	echo "<td><img src=pics/copy.png width=16px></td><td>Copy row to insert</td>";
-}
-//always show this legend
-echo "<td><img src=pics/details.gif></td><td>Value details</td>";
 echo "</tr>";
 echo "</table>";
 //display results
@@ -352,5 +349,6 @@ if($stype==2){
 	echo "}";
 	echo "</script>";
 }
-/**************************JAVASCRIPT*******************************/
-?>
+
+/**************************END OF JAVASCRIPT*******************************/
+?>      

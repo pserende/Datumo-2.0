@@ -38,14 +38,14 @@ class module{
 	public function tables(){
 		//set search path to information schema
 		$this->pdo->dbInfo();
-		$sql="SELECT table_name FROM tables WHERE table_schema='".$this->pdo->getDatabase()."'";
+		$sql="SELECT table_name, table_comment FROM tables WHERE table_schema='".$this->pdo->getDatabase()."'";
 		echo "<table>";
 		$i=0; //initialize counter
 		foreach ($this->pdo->query($sql) as $row){ //loop through all tables
 			$i++; //increment counter to handle row display 
 			//initialize row
 			if($i==1)	echo "<tr>";
-			echo "<td width=100px>$row[0]</td>";
+			echo "<td width=100px><label title='$row[1]'>$row[0]</label></td>";
 			//end row
 			if($i==4){	echo "</tr>";$i=0;}
 		}

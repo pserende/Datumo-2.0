@@ -3,7 +3,7 @@ body {
 	background:#fff; 
 	font-family:Verdana, Geneva, sans-serif; 
 	font-size:11px; 
-	line-height:14px; 
+	line-height:16px; 
 	color:#545353;
 	}
 
@@ -243,7 +243,22 @@ div.error{
 	
 	}
 	
+input[type=button]{
+	font-family:Verdana, Geneva, sans-serif; 
+	font-size:11px; 
+	height:22px;
+	color:#444;
+	}
 	
+input[type=button].callTables{
+	margin-right:5px;
+	width:170px;
+	text-align:left;
+	background-position: left;
+	background-repeat: no-repeat;
+	padding-left:25px;	
+	}
+
 iframe.gridDisp{
 	width:1080px;
 	height:800px;

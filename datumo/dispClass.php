@@ -30,6 +30,7 @@ class dispClass{
 	private $FKtable=array();
 	private $FKeys=array();
 	private $arrMasks=array();
+	private $arrMaskPic=array();
 	private $query;
 	private $vars=array();
 	private $mainQuery;
@@ -96,6 +97,7 @@ class dispClass{
 	function getFKatt(){ return $this->FKvalue;}
 	function getDefault(){ return $this->default;}
 	function getMasks(){	return $this->arrMasks;}
+	function getMaskPic(){	return $this->arrMaskPic;}
 	
 	
 /**
@@ -868,17 +870,34 @@ class dispClass{
 		$row=$sql->fetch();
 		//is there any match?
 		if($sql->rowCount()!=0){
-			if($row[1]!=""){ //it has a picture
-				//do nothing for now
-			} else { //new name for the table
-				$mask=$row[0];
-			}
+			$this->arrMaskPic[]=$row[1];
+			$mask=$row[0];
 		} else { //just write the table name
 			$mask=$objName;
 		}	
 		//return to information schema
 		$this->pdo->dbInfo();
 		return $mask;
+	}
+	
+	public function legend($objName,$user_id){
+		$this->perm->tablePermissions($objName, $user_id);
+		//table legend
+		echo "<table>";
+		if($this->perm->getInsert()){	//only display this legend if this user has insert permissions
+			echo "<tr><td style='text-align:center'><img src=pics/add.png width=32px></td><td>Add row to multiple insert</td></tr>";
+			echo "<tr><td style='text-align:center'><img src=pics/remove.png width=32px></td><td>Remove row from multiple insert</td></tr>";
+			echo "<tr><td style='text-align:center'><img src=pics/submit.png width=32px></td><td>Insert rows</td></tr>";
+			echo "<tr><td style='text-align:center'><img src=pics/copy.png width=16px></td><td>Copy row to insert</td></tr>";
+		}
+		if($this->perm->getRequest()){
+			echo "<tr><td style='text-align:center'><img src=pics/store.png width=16px></td><td>Add to products to basket</td></tr>";
+		}
+		//always show this legend
+		echo "<tr><td style='text-align:center'><img src=pics/details.gif></td><td>Value details</td></tr>";
+		echo "<tr><td style='text-align:center'><img src=pics/help.png></td><td>Observations</td></tr>";
+		echo "</table>";
+		
 	}
 	
 	
