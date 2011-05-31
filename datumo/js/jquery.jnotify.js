@@ -17,7 +17,19 @@
  *
  * Date: 2010-09-30
  * Rev:  1.1.00
+ 
+ * Modified by João Lagarto and Pedro Pires
+ * Date: 30-05-2011
+ * Last revision: 31-05-2011 
+ * Implemented in Agendo and Datumo
+ * 
+ * New addons
+ * - new default variable onlyOne: allows users to decide if only one 
+ * notification is to be displayed (or more)
+ * 
+ * 
  */
+
 ;(function($){
 	$.jnotify = function (m, o, d){
 		return new jNotify(m, o, d);
@@ -26,17 +38,18 @@
 	// set the version of the plug-in
 	$.jnotify.version = "1.1.00";
 	
-	var $jnotify, queue = [], count = 0, playing = false, paused = false, queuedId, queuedNote, 
+	var $jnotify, queue = [], count = 0, allowCreate=true, playing = false, paused = false, queuedId, queuedNote, messagesList = [],
 		// define default settings
 		defaults = {
 			// define core settings
 			  type: ""                                  // if a type is specified, then an additional class of classNotification + type is created for each notification
 			, delay: 2000                               // the default time to show each notification (in milliseconds)
-			, sticky: false                             // determines if the message should be considered "sticky" (user must manually close notification)
+			, sticky: false 	                        // determines if the message should be considered "sticky" (user must manually close notification)
 			, closeLabel: "&times;"                     // the HTML to use for the "Close" link
 			, showClose: true                           // determines if the "Close" link should be shown if notification is also sticky
-			, fadeSpeed: 1000                           // the speed to fade messages out (in milliseconds)
+			, fadeSpeed: 500                            // the speed to fade messages out (in milliseconds)
 			, slideSpeed: 250                           // the speed used to slide messages out (in milliseconds)
+			, onlyOne: true								// determine if we have only one notification or if we can have more
 			
 			// define the class statements
 			, classContainer: "jnotify-container"       // className to use for the outer most container--this is where all the notifications appear
@@ -104,7 +117,6 @@
 		$.jnotify.play(true, 0);
   }
 
-	
 	function jNotify(message, options){
 		// a reference to the jNotify object
 		var self = this, TO = typeof options;
@@ -131,16 +143,19 @@
 		
 		// create the notification
 		function create(message){
+			messagesList[count]=message;
 			var html = '<div class="' + options.classNotification + (options.type.length ? (" " + options.classNotification + "-" + options.type) : "") + '">'
 			         + '<div class="' + options.classBackground + '"></div>'
 			         + (options.sticky && options.showClose ? ('<a class="' + options.classClose + '">' + options.closeLabel + '</a>') : '')
 			         + '<div class="' + options.classMessage + '">'
 			         + '<div>' + message + '</div>'
 			         + '</div></div>';
-
+	
+			msg = message;
+			
 			// increase the counter tracking the notification instances
 			count++;
-			
+				
 			// create the note
 			var $note = $(html);
 			
@@ -150,10 +165,13 @@
 					self.remove();
 				});
 			}
-
+	
 			// run callback
 			if( $.isFunction(options.create) ) options.create.apply(self, [$note]);
-
+			
+			//block any other message if option is set 
+			allowCreate=!options.onlyOne;
+				
 			// return the new note			
 			return $note.appendTo($jnotify);
 		}
@@ -161,9 +179,11 @@
 		// remove the notification		
 		this.remove = function (callback){
 			var $msg = $note.find("." + options.classMessage), $parent = $msg.parent();
+
 			// remove message from counter
 			var index = count--;
-
+				
+			//alert(count); 			
 			// run callback
 			if( $.isFunction(options.beforeRemove) ) options.beforeRemove.apply(self, [$msg]);
 			
@@ -171,29 +191,37 @@
 			function finished(){
 				// remove the parent container
 				$parent.remove();
-				
-				// if there's a callback, run it
+			
 				if( $.isFunction(callback) ) callback.apply(self, [$msg]);
 				if( $.isFunction(options.remove) ) options.remove.apply(self, [$msg]);
+				
 			}
-
+			
 			// check if a custom transition has been specified
 			if( $.isFunction(options.transition) ) options.transition.apply(self, [$parent, $msg, index, finished, options]);
 			else {
-				$msg.fadeTo(options.fadeSpeed, 0.01, function (){
+				$msg.fadeTo(options.fadeSpeed,0.01, function (){
 					// if last item, just remove
 					if( index <= 1 ) finished();
 					// slide the parent closed
-					else $parent.slideUp(options.slideSpeed, finished);
+					else $parent.fadeOut(options.slideSpeed, finished);
 				});
 				
 				// if the last notification, fade out the container
-				if( count <= 0 ) $parent.fadeOut(options.fadeSpeed);
+				$parent.fadeOut(options.fadeSpeed, function(){
+					allowCreate=true; 	//boolean variable to control message display: always set it true here
+				});
 			}
 		}
 		
+		// added to make sure that the same message doesnt show multiple times on the container
+		if(options.onlyOne && count > 0)
+			for(i = 0; i<count; i++)
+				allowCreate = (messagesList[i]==message)? false : true;
+			
 		// create the note
-		var $note = create(message);
+		if(allowCreate)	var $note = create(message);
+		else return null;
 		
 		// if not a sticky, add to show queue
 		if( !options.sticky ){
@@ -207,4 +235,3 @@
 	};
 
 })(jQuery);
-
