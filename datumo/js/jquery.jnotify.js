@@ -137,18 +137,18 @@
 		// if the container doesn't exist, create it
 		if( !$jnotify ){
 			// we want to use one single container, so always use the default container class
-			$jnotify = $('<div class="' + defaults.classContainer + '" />').appendTo("body");
+			$jnotify = $('<div lang=exp class="' + defaults.classContainer + '" />').appendTo("body");
 			if( $.isFunction(options.init) ) options.init.apply(self, [$jnotify]);
 		} 
 		
 		// create the notification
 		function create(message){
 			messagesList[count]=message;
-			var html = '<div class="' + options.classNotification + (options.type.length ? (" " + options.classNotification + "-" + options.type) : "") + '">'
-			         + '<div class="' + options.classBackground + '"></div>'
+			var html = '<div lang=exp class="' + options.classNotification + (options.type.length ? (" " + options.classNotification + "-" + options.type) : "") + '">'
+			         + '<div lang=exp class="' + options.classBackground + '"></div>'
 			         + (options.sticky && options.showClose ? ('<a class="' + options.classClose + '">' + options.closeLabel + '</a>') : '')
-			         + '<div class="' + options.classMessage + '">'
-			         + '<div>' + message + '</div>'
+			         + '<div lang=exp class="' + options.classMessage + '">'
+			         + '<div lang=exp>' + message + '</div>'
 			         + '</div></div>';
 	
 			msg = message;

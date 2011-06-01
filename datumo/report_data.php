@@ -5,6 +5,10 @@ require_once "session.php";
 $user_id = startSession();
 
 require_once "__dbConnect.php"; 
+require_once "queryClass.php";
+require_once "dispClass.php";
+$display=new dispClass();
+$qClass=new queryClass();
 // to the url parameter are added 4 parameters as described in colModel
 // we should get these parameters to construct the needed query
 // Since we specify in the options of the grid that we will use a GET method 
@@ -25,7 +29,15 @@ $sidx = $_GET['sidx'];
 $sord = $_GET['sord']; 
 
 //table to build query
-if(isset($_GET['report_id'])) $report_id=$_GET['report_id'];
+if(isset($_GET['report_id'])) 		$report_id=$_GET['report_id'];
+if(isset($_GET['extra_fields'])){
+	$extra_fields=$_GET['extra_fields']; 	//as a string
+	$arr_fields=explode(",", $extra_fields);//as an array
+}
+if(isset($_GET['extra_op'])){
+	$extra_op=$_GET['extra_op'];			//as a string
+	$arr_op=explode(",",$extra_op);			//as an array
+}
 
 // if we not pass at first time index use the first column for the index or what you want
 if(!$sidx) $sidx=1; 
@@ -35,6 +47,8 @@ $totalrows = isset($_REQUEST['totalrows']) ? $_REQUEST['totalrows']: false;
 if($totalrows) { 
 	$limit = $totalrows; 
 }
+
+
 
 //call database class and connect to database
 $conn = new dbConnection();
@@ -88,8 +102,51 @@ if(isset($_GET['filters'])){
 	}
 	//remove the last operator from the string
 	$clause=substr($clause,0,strlen($clause)-strlen($op)-1);
-	
 }
+
+//search for input parameters
+$sql=$conn->query("SELECT param_field FROM param WHERE param_report=$report_id");
+//loop through all input parameters
+$extra_query="";
+for($i=0;$row=$sql->fetch();$i++){
+	if(isset($arr_fields[$i])){
+		if($arr_fields[$i]=="") 	continue;	//skip loop if this field is null
+		//find the right operator
+		switch($arr_op[$i]){
+			case 0:
+				$arr_op[$i]="=";
+				break;
+			case 1:
+				$arr_op[$i]="<>";
+				break;
+			case 2:
+				$arr_op[$i]=">";
+				break;
+			case 3:
+				$arr_op[$i]="<";
+				break;
+		}
+		$ref=$qClass->prepareQuery(array($row[0],$conn->getDatabase(),"",""),3);
+		if($ref[0]!=""){
+			$arr_fields[$i]=$display->FKfield($ref[0], $arr_fields[$i]);
+		}
+		$extra_query.=$row[0].$arr_op[$i]."'$arr_fields[$i]' AND ";	
+	}
+}
+//do we have input parameters
+if($extra_query!=""){
+	$extra_query=substr($extra_query,0,strlen($extra_query)-4);
+	if(strpos($query," WHERE ")){	//if exists
+		$extra_query=" AND ".$extra_query;
+	} else {	//WHERE clause does not exist
+		if(strpos($clause," WHERE ")){
+			$extra_query=" AND ".$extra_query;
+		} else {
+			$extra_query=" WHERE ".$extra_query;
+		}
+	}
+}
+
 
 //echo $flag;
 // the actual query for the grid data 
@@ -121,8 +178,7 @@ $response->total = $total_pages;
 $response->records = $count;
 
 // the actual query for the grid data 
-$sql=$conn->prepare($query.$clause." ORDER BY $sidx $sord LIMIT $limit OFFSET $start"); 
-//echo $sql->queryString;
+$sql=$conn->prepare($query.$clause.$extra_query." ORDER BY $sidx $sord LIMIT $limit OFFSET $start"); 
 $sql->execute();
 
 for($i=0;$row=$sql->fetch();$i++){

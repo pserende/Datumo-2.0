@@ -7,10 +7,13 @@ $(document).ready(function(){
 			height:"100%",
 			width:700,
 			id:"",
-			caption:""
+			caption:"",
+			extra_op:"",
+			extra_fields:""
 		};
 		var options = jQuery.extend({}, defaults, options);
 		var report_id=options.report_id;
+		var extra="&extra_op="+options.extra_op+"&extra_fields="+options.extra_fields;
 		$.ajax(
 		    {
 		       type: "POST",
@@ -22,7 +25,7 @@ $(document).ready(function(){
 		            colN = result.colNames;
 		            colM = result.colModel;		       
 		            $("#list").jqGrid({
-		                url:"report_data.php?report_id="+report_id,						//URL to get data
+		                url:"report_data.php?report_id="+report_id+extra,	//URL to get data
 		                datatype: 'json', 					//I want JSON 
 		                mtype: 'GET',						//type to send query navigation variables
 		                colModel: colM,						//attribute properties
@@ -194,7 +197,7 @@ $(document).ready(function(){
 	
 	});
 	
-	$("#nextParameters, #nextParameters ").click(function(){
+	$("#nextParameters, #nextParameters2").click(function(){
 		var resp=confirm("Add input parameters?");
 		if(resp){
 			//need to check if the sql query is valid
@@ -288,10 +291,10 @@ $(document).ready(function(){
 				op.push($(this).val());
 			});
 			//get all query parameters
-//			$("input[type=text].parameters").each(function(){
-//				//check its value
-//				params.push($(this).val());
-//			});
+			$("input[type=text].parameters").each(function(){
+				//check its value
+				params.push($(this).val());
+			});
 			//get report conf
 			var report_conf=$("#report_conf").val();
 			var url="ajaxReport.php?type=5&report_name="+report_name+"&report_desc="+report_desc+"&report_conf="+report_conf;
@@ -300,7 +303,8 @@ $(document).ready(function(){
 				fields:fields,
 				masks:masks,
 				clauses:clauses,
-				op:op
+				op:op, 
+				params:params
 				}, function (data){
 				alert(data);
 			});
@@ -310,6 +314,31 @@ $(document).ready(function(){
 	
 	
 });
+
+function setParams(report_id){
+	var CurForm=eval("document.paramForm");
+	var noRows=CurForm.length/2;
+	//create an array to store values
+	var arr=new Array;
+	var op=new Array;
+	//loop through all form fields
+	for(var i=0;i<CurForm.length;i++){
+		var val;
+		if(i%2){ //values
+			arr.push(CurForm[i].value);
+		} else { //operators
+			val=CurForm[i].value;
+			if(val=="=")	val=0;
+			op.push(val);
+		}
+	}
+	$("#list").GridUnload();
+	$(document).createGrid({
+		report_id: report_id,
+		extra_op: op,
+		extra_fields:arr
+	});
+}
 
 var noFields=1;
 function multiFields(type, id, multiple_id){

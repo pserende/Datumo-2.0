@@ -12,8 +12,10 @@ class queryClass{
 	private $sql=array();
 	private $vars=array();  
     private $data=array();
+    private $pdo;
 	
 	public function __construct(){
+		$this->pdo=new dbConnection();
     }
 
     /**
@@ -34,6 +36,21 @@ class queryClass{
             throw new Exception("Property ‘$var’ does not exist");
         }
         
+    }
+    
+    public function prepareQuery($arr, $no){
+    	$this->pdo->dbInfo();
+		
+		for($i = 0;$i<sizeof($arr);$i++){
+			$this->__set($i, $arr[$i]);	
+		}
+		//select engine (mysql or pgsql)
+		$this->engineHandler($this->pdo->getEngine());
+		$sql = $this->pdo->query($this->getSQL($no)); 
+		$row=$sql->fetch();
+		//return search path to main database
+		$this->pdo->dbConn();
+		return $row;
     }
 	
 	public function getSQL($i) {return $this->sql[$i];}

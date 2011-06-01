@@ -32,7 +32,7 @@ if(isset($_GET['type'])){
 			createReport($user_id);
 			break;
 		case 6:
-//			inputParameters();
+			inputParameters();
 			break;					
 	}
 
@@ -58,8 +58,8 @@ function fields(){
 	echo "<div class=next>";
 	echo "<a href=javascript:void(0) id=nextClauses>Next</a>";
 	echo "&nbsp;&nbsp;&nbsp";
-//	echo "<a href=javascript:void(0) id=nextParameters>Add input parameters</a>";
-//	echo "&nbsp;&nbsp;&nbsp";
+	echo "<a href=javascript:void(0) id=nextParameters>Add input parameters</a>";
+	echo "&nbsp;&nbsp;&nbsp";
 	echo "<a href=javascript:void(0) id=finishQuery>Finish</a>";
 	echo "</div>";
 	echo "<hr>";
@@ -111,8 +111,6 @@ function autoSuggest(){
 }
 
 function testQuery(){
-	//includes
-	require_once "queryClass.php";
 	//database class
 	$conn=new dbConnection();
 	//other classes
@@ -166,8 +164,8 @@ function clauses(){
 	//hidden textbox to control the number of attributes
 	echo "<input type=hidden id=multiple_clause name=multiple_clause value=0>";	
 	echo "<div class=next>";
-//	echo "<a href=javascript:void(0) id=nextParameters2>Add input parameters</a>";
-//	echo "&nbsp;&nbsp;&nbsp";
+	echo "<a href=javascript:void(0) id=nextParameters2>Add input parameters</a>";
+	echo "&nbsp;&nbsp;&nbsp";
 	echo "<a href=javascript:void(0) id=finishQuery2>Finish</a>";
 	echo "</div>";
 	echo "<hr>";
@@ -214,27 +212,32 @@ function createReport($user_id){
 	//print_r($_GET);
 	//call databse class
 	$conn=new dbConnection();
+	$database=$conn->getDatabase();
 	//get url variables to build the query
-	if(isset($_GET['tables'])){
-		$objName=$_GET['tables'];
-		$objName_string=implode(",",$objName);
+	if(isset($_GET['tables'])){			//query tables
+		$objName=$_GET['tables'];		//array form
+		$objName_string=implode(",",$objName);	//tables as a string
 	}
-	if(isset($_GET['fields'])){	
-		$fields=$_GET['fields'];
-		$fields_string=implode(",",$fields);
+	if(isset($_GET['fields'])){			//query fields to display
+		$fields=$_GET['fields'];		//array form
+		$fields_string=implode(",",$fields);	//displayed as string
 	}
-	if(isset($_GET['masks'])){			$masks=$_GET['masks'];	}
-	if(isset($_GET['clauses'])){
+	if(isset($_GET['masks'])){			$masks=$_GET['masks'];	}	//field masks
+	if(isset($_GET['clauses'])){		//Where clauses
 		$clauses=$_GET['clauses'];	
 	} else {
 		$clauses="";
 	}
-	if(isset($_GET['op'])){	
+	if(isset($_GET['op'])){				//query operators
 		$op=$_GET['op'];	
 	} else {
 		$op="";
 	}
-
+	if(isset($_GET['params'])){			//input parameters
+		$params=$_GET['params'];
+	} else {
+		$params=null;
+	}
 	if(isset($_GET['report_name'])){	$report_name=$_GET['report_name'];	}
 	if(isset($_GET['report_desc'])){	$report_desc=$_GET['report_desc'];	}
 	if(isset($_GET['report_conf'])){	$report_conf=$_GET['report_conf'];	}
@@ -289,6 +292,12 @@ function createReport($user_id){
 			if($arr=="")	$arr=$fields[$j];
 			$sql=$conn->query("INSERT INTO reprop VALUES ('',$report_id,'$fields[$j]','$arr')");
 			$j++;
+		}
+		//are there any input parameters??
+		if($params!=""){
+			foreach($params as $arr){	//loop through all input parameters
+				$sql=$conn->query("INSERT INTO param VALUES ('',$report_id,'$arr','')");
+			}
 		}
 		$conn->commit();
 		echo "Report successfully created";
@@ -377,8 +386,8 @@ function inputParameters(){
 	echo "<table>";
 	echo "<tr>";
 	//cloning rows
-	echo "<td id=clone><a href=javascript:void(0) style='text-decoration:none' class=cloneMe onclick=\"javascript:multiFields('sum', this, 'multiple_params');\" title='clone row'>Add</a></td>";
-    echo "<td id=delete><a href=javascript:void(0) style='text-decoration:none' class=deleteMe onclick=\"javascript:multiFields('subtract', this, 'multiple_params');\" title='cancel row'>Remove</a></td>";
+	echo "<td id=clone><a href=javascript:void(0) style='text-decoration:none;font-size:10px;' class=cloneMe onclick=\"javascript:multiFields('sum', this, 'multiple_params');\" title='clone row'>Add</a></td>";
+    echo "<td id=delete><a href=javascript:void(0) style='text-decoration:none;font-size:10px;' class=deleteMe onclick=\"javascript:multiFields('subtract', this, 'multiple_params');\" title='cancel row'>Remove</a></td>";
 	echo "<td><input type=text id=parameters name=parameters class=parameters lang=__fk size=50></td>";	//field text input
 	echo "</tr>";
 	echo "</table>";
@@ -387,6 +396,26 @@ function inputParameters(){
 	echo "<a href=javascript:void(0) id=finishQuery3>Finish</a>";
 	echo "</div>";
 	echo "<hr>";
+}
+
+function getReference($arr){
+	require_once "queryClass.php";
+	$conn=new dbConnection();
+	//change path to information schema
+	$conn->dbInfo();
+	$qClass=new queryClass();
+	
+	for($i = 0;$i<sizeof($arr);$i++){
+		$qClass->__set($i, $arr[$i]);	
+	}
+	//select engine (mysql or pgsql)
+	$qClass->engineHandler($conn->getEngine());
+	$sql = $conn->query($qClass->getSQL(3)); 
+	echo $sql->queryString;
+	$row=$sql->fetch();
+	//return search path to main database
+	$conn->dbConn();
+	return $row[0];
 }
 
 ?>
