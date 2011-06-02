@@ -138,6 +138,18 @@ if($action){
 			break;
 	}
 }
+//check for action variable after applying a filter
+if(isset($_GET['comeFromAction']) and $_GET['comeFromAction']!="false"){ //if exists call javascript with action notification
+	$comeFromAction=$_GET['comeFromAction'];
+	if($str[strlen($str)-1]!="e"){
+		$comeFromAction.="d";
+	} else {
+		$comeFromAction.="ed";
+	}
+	echo "<script type='text/javascript'>";
+	echo "$.jnotify('Record(s) $comeFromAction');";
+	echo "</script>";
+}
 
 //headers' properties
 $display->tableHeaders($table);

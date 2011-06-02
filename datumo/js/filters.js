@@ -4,7 +4,7 @@
  * @description function to submit filter forms
  */
 
-function filter(name, objName, j, order, colOrder,page){
+function filter(name, objName, j, order, colOrder,page,comeFromAction){
 	//number of rows to be displayed
 	if(j=="")
 		var nrows=20;
@@ -38,7 +38,9 @@ function filter(name, objName, j, order, colOrder,page){
 	}
 	//form actions
 	//(page-1) hack to store page position after update/delete
-	CurForm.action = "manager.php?table="+objName+"&nrows="+nrows+"&search=1&order="+order+"&colOrder="+colOrder+"&page="+page;
+	if(!comeFromAction)
+		comeFromAction=false;
+	CurForm.action = "manager.php?table="+objName+"&nrows="+nrows+"&search=1&order="+order+"&colOrder="+colOrder+"&page="+page+"&comeFromAction="+comeFromAction;
 	CurForm.submit();
 }
 

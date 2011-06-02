@@ -84,7 +84,13 @@ echo "<legend>Welcome to Datumo Report Generator Tool</legend>";
 
 $tables = $perm->tableAccess($user_id);
 echo "<div class=tableSel>";
-echo "Select tables (max. 3)<br>";
+echo "Select tables (max. 3)";
+echo "<div style='float:right;text-align:right;'>";
+echo "<a href=javascript:void(0)>Help</a>&nbsp;&nbsp;";
+echo "<a href=javascript:void(0) onclick=window.location.reload()>Reset</a>&nbsp;&nbsp;";
+echo "<div id=tInfo style='display:none;position:relative;z-index:9999;border:1px solid;background:#DDD'></div>";
+echo "</div>";
+echo "<br>";
 for($i=0;$i<sizeof($tables);$i++){
 	echo "<label style='cursor:pointer'><input type=checkbox id=$tables[$i] name=$tables[$i] class=tables> $tables[$i]</label><br>";
 }

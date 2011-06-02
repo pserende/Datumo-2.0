@@ -33,7 +33,10 @@ if(isset($_GET['type'])){
 			break;
 		case 6:
 			inputParameters();
-			break;					
+			break;		
+		case 7:
+			infoTable();
+			break;			
 	}
 
 }
@@ -128,7 +131,7 @@ function testQuery(){
 		$masks=$_GET['masks'];
 	}
 	$query="SELECT $fields_string FROM $objName_string";
-	//echo $query;
+//	echo $query;
 	try{
 		$sql=$conn->query($query);
 		echo true;
@@ -416,6 +419,36 @@ function getReference($arr){
 	//return search path to main database
 	$conn->dbConn();
 	return $row[0];
+}
+
+function infoTable(){
+	$conn=new dbConnection();
+	//http variables
+	if(isset($_GET['tables']) and $_GET['tables']!="")	$objName=$_GET['tables'];
+	else{
+		echo "No tables selected";
+		exit();
+	}
+	//change search path to information schema
+	$conn->dbInfo();
+	echo "<table style='font-size:10px;'><tr>";
+	echo "<td colspan=".sizeof($objName)."><b>Available attributes</b></td>";
+	echo "</tr><tr>";
+	//loop through selected tables
+	foreach ($objName as $table){
+		echo "<td valign=top>";
+		echo "<table style='font-size:10px;float:left'>";
+		echo "<th>$table</th>";
+		$sql=$conn->query("SELECT column_name FROM columns WHERE table_schema='".$conn->getDatabase()."' AND table_name='$table'");
+		//loop through all columns
+		for($i=0;$row=$sql->fetch();$i++){
+			echo "<tr><td>$row[0]</td></tr>";
+		}
+		echO "</table>";
+		echo "</td>";
+	}
+	echO "</tr></table>";	
+	
 }
 
 ?>

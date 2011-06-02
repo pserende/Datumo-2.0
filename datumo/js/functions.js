@@ -144,8 +144,9 @@ function checkfields(action,objName,nrows, order, colOrder,search,page){
 				CurForm.submit();
 				//alert(browser);
 				if(browser!="Chrome"){
-					filter('table',objName,'',order,colOrder,page);
+					filter('table',objName,'',order,colOrder,page,action);
 				}
+				
 			} catch (err){
 				alert("Form not submitted!"+err);
 			}
@@ -304,7 +305,7 @@ function multiAdd(objName){
 			}
 		}
 		
-		url="manager.php?table="+objName+"&nrows=20&action=insert";
+		url="manager.php?table="+objName+"&nrows=20&action=insert&comeFromAction=insert";
 		CurForm.action = url;
 		try{
 			CurForm.submit();

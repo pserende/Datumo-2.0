@@ -43,7 +43,7 @@
 		defaults = {
 			// define core settings
 			  type: ""                                  // if a type is specified, then an additional class of classNotification + type is created for each notification
-			, delay: 2000                               // the default time to show each notification (in milliseconds)
+			, delay: 2500                               // the default time to show each notification (in milliseconds)
 			, sticky: false 	                        // determines if the message should be considered "sticky" (user must manually close notification)
 			, closeLabel: "&times;"                     // the HTML to use for the "Close" link
 			, showClose: true                           // determines if the "Close" link should be shown if notification is also sticky

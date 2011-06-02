@@ -99,9 +99,14 @@ $(document).ready(function(){
 	
 	$("#nextFields").click(function(){
 		var i=0; //initialize counter
+		var objName=new Array;
 		$("input[type=checkbox], .tables").each(function(){
 			//check its value
-			if($(this).attr("checked"))	i++; //increment number of checked checkboxes
+			if($(this).attr("checked")){
+				objName.push(this.id);
+				i++; //increment number of checked checkboxes
+			}
+			$(this).attr("disabled","disabled"); //disable checkboxes
 		});
 		if(i==0){
 			alert("You must select at least one table to proceed!");
@@ -110,7 +115,15 @@ $(document).ready(function(){
 			var url="ajaxReport.php?type=0";
 			$.get(url,{},
 			function(data){
+				$("#nextFields").css("display","none");
 				$("#fields").html(data);
+				var url="ajaxReport.php?type=7";
+				$.get(url,{
+					tables:objName
+				}, function(data){
+					$("#tInfo").html(data);
+					$("#tInfo").css("display","block");
+				});
 			});
 		}
 		
@@ -147,6 +160,9 @@ $(document).ready(function(){
 					fields:fields
 				},
 				function(data){
+					$("#nextClauses").css("display","none");
+					$("#nextParameters").css("display","none");
+					$("#finishQuery").css("display","none");
 					$("#clauses").html(data);
 				});
 			} else {
@@ -157,7 +173,7 @@ $(document).ready(function(){
 	
 
 	
-	$("#finishQuery, #finishQuery2, #finishQuery3 ").click(function(){
+	$("#finishQuery, #finishQuery2, #finishQuery3").click(function(){
 		var resp=confirm("Sure you want to finish this report?");
 		if(resp){
 			//need to check if the sql query is valid
@@ -187,6 +203,11 @@ $(document).ready(function(){
 					var url="ajaxReport.php?type=4";
 					$.get(url,{},
 					function(data){
+						$("#nextClauses").css("display","none");
+						$("#nextParameters,#nextParameters2").css("display","none");
+						$("#finishQuery").css("display","none");
+						$("#finishQuery2").css("display","none");
+						$("#finishQuery3").css("display","none");
 						$("#reportInfo").html(data);
 					});
 				} else {
@@ -229,6 +250,10 @@ $(document).ready(function(){
 						tables:objName
 					},
 					function(data){
+						$("#finishQuery").css("display","none");
+						$("#finishQuery2").css("display","none");
+						$("#nextParameters").css("display","none");
+						$("#nextParameters2").css("display","none");
 						$("#inputParameters").html(data);
 					});
 				} else {

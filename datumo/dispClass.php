@@ -884,6 +884,7 @@ class dispClass{
 		$this->perm->tablePermissions($objName, $user_id);
 		//table legend
 		echo "<table>";
+		echo "<tr><td colspan=2 style='text-align:center'><b>Press + for detailed information</b></td></tr>";
 		if($this->perm->getInsert()){	//only display this legend if this user has insert permissions
 			echo "<tr><td style='text-align:center'><img src=pics/add.png width=32px></td><td>Add row to multiple insert</td></tr>";
 			echo "<tr><td style='text-align:center'><img src=pics/remove.png width=32px></td><td>Remove row from multiple insert</td></tr>";
