@@ -287,9 +287,10 @@ function qSubmit(objName,i){
 		if(qSearchValue.length<3){
 			alert("Search string must have more than 2 characters");
 			return;
-		}
+		}	
 	}
 	CurForm.action = "manager.php?table="+objName+"&nrows="+nrows+"&search=3";
 	CurForm.submit();
+	
 }
 

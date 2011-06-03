@@ -77,7 +77,7 @@ $table_type=array_count_values($table_type);
 $masks=$display->getMasks();
 $maskPic=$display->getMaskPic();
 /*
-echo "<input type=button id=bugReport value='Report Bug'>";
+echo "<input type=button id=bugReport value='Helpdesk'>";
 echo "<div id=Notification></div>";
 */
 //main table
@@ -92,7 +92,7 @@ echo "<tr>";
 echo "<td valign=top>";
 echo "<table border=0 align=left width=200px>";
 $display->userOptions(true,$user_id);
-echo "<tr><td><a href=javascript:void(0) class=contact>Report bug</a>";
+echo "<tr><td><a href=javascript:void(0) class=contact>Helpdesk</a>";
 $display->contactForm();
 echo "</td></tr>";
 echo "<tr><td><hr></td></tr>";

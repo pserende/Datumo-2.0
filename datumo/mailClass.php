@@ -10,9 +10,12 @@ class mailClass extends PHPMailer{
 		$this->pdo = new dbConnection();
 		//set search path to main database
 		$this->pdo->dbConn();
-		$sql = $this->pdo->prepare("SELECT mainconfig_host, mainconfig_port, mainconfig_password, mainconfig_email, mainconfig_smtpsecure, mainconfig_smtpauth FROM ".$this->pdo->getDatabase().".mainconfig WHERE mainconfig_id = 1");
-		$sql->execute();
-		$row = $sql->fetch();
+		
+		$sql = "SELECT configparams_name, configparams_value from configparams where configparams_name='host' or configparams_name='port' or configparams_name='password' or configparams_name='email' or configparams_name='smtpsecure' or configparams_name='smtpauth'";
+		$sql = $this->pdo->query($sql);
+		for($i=0;$arr=$sql->fetch();$i++){
+			$row[$i]=$arr[1];
+		}
 		$this->IsSMTP(); // telling the class to use SMTP
         $this->SMTPDebug  = 1;                     // enables SMTP debug information (for testing)
         $this->SMTPAuth   = $row[5];                  // enable SMTP authentication
@@ -21,7 +24,7 @@ class mailClass extends PHPMailer{
         $this->Host       = $row[0];      		// sets GMAIL as the SMTP server
         $this->Username   = $row[3];  			// GMAIL username
         $this->Password   = $row[2];            // GMAIL password
-    }
+	}
 	
 	/**
  * Method to send emails

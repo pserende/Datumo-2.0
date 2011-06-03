@@ -501,7 +501,7 @@ function displayMenu($user_id){
 	echo "<table border=0 align=left width=200px>";
 	echo "<tr><td><a href=".$db->getFolder()."/admin.php title='Return to the administration area'>Return to main menu</a></td></tr>";
 	$display->userOptions(true,$user_id);
-	echo "<tr><td><a href=javascript:void(0) class=contact>Report bug</a>";
+	echo "<tr><td><a href=javascript:void(0) class=contact>Helpdesk</a>";
 	$display->contactForm();
 	echo "</td></tr>";
 	echo "<tr><td><hr></td></tr>";

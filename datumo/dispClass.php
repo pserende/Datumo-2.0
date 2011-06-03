@@ -827,6 +827,12 @@ class dispClass{
 		echo "<div id=contactMe class='container'>";
         echo "<form class='contactForm' name='cform' method='post'>";
         echo "<p><b>Do you want to report a bug? Please submit the form.</b></p>";
+        echo "<p><select name=contactType id=contactType>";
+        echo "<option value=0 selected>Contact us...</option>";
+        echo "<option value=bugs@cirklo.org>Bugs</option>";
+        echo "<option value=support@cirklo.org>Support</option>";
+        echo "<option value=info@cirklo.org>Informations</option>";
+        echo "</select></p>";
         echo "<p><label for='name'>Name</label>";
         echo "<input id='name' type='text' value='' name='name' class='name'/></p>";
         echo "<p><label for='e-mail'>E-mail</label>";

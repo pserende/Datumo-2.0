@@ -74,6 +74,11 @@ $(document).ready(function() {
 		var options = jQuery.extend({}, defaults, options);
 		//call contact form
 		var CurForm=eval("document."+options.form);
+		var contactType=$("#contactType").val();
+		if(contactType==0){
+			alert("Choose a contact type");
+			return;
+		}
 		for(var i=0;i<CurForm.length;i++){
 			if(CurForm[i].value==""){
 				CurForm[i].focus();
@@ -84,6 +89,7 @@ $(document).ready(function() {
 		var url = "ajaxMail.php?type=1";
 		//ajax request with post variables (NICE)
 		$.post(url,{name:$('#name').val(),
+			  target:$("#contactType").val(),
 			  email:$('#email').val(),
 			  message:$('#message').val()},
 		
