@@ -11,7 +11,7 @@ $user_id = startSession();
 <link href="css/autoSuggest.css" rel="stylesheet" type="text/css">
 <link href="css/tipTip.css" rel="stylesheet" type="text/css">
 <link href="css/jquery.treeview.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
+<script type="text/javascript" src="js/jquery-1.5.1.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js.js"></script>
 <script type="text/javascript" src="js/jquery.tipTip.js"></script>
 <script type="text/javascript" src="js/jquery.treeview.js"></script>

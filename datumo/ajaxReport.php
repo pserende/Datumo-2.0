@@ -131,7 +131,7 @@ function testQuery(){
 		$masks=$_GET['masks'];
 	}
 	$query="SELECT $fields_string FROM $objName_string";
-//	echo $query;
+	echo $query;
 	try{
 		$sql=$conn->query($query);
 		echo true;

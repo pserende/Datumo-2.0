@@ -160,6 +160,7 @@ $(document).ready(function(){
 					fields:fields
 				},
 				function(data){
+					//alert(data);
 					$("#nextClauses").css("display","none");
 					$("#nextParameters").css("display","none");
 					$("#finishQuery").css("display","none");
@@ -200,9 +201,11 @@ $(document).ready(function(){
 			},
 			function(data){
 				if(data){
+					alert(data);
 					var url="ajaxReport.php?type=4";
 					$.get(url,{},
 					function(data){
+						//alert(data);
 						$("#nextClauses").css("display","none");
 						$("#nextParameters,#nextParameters2").css("display","none");
 						$("#finishQuery").css("display","none");
@@ -334,6 +337,7 @@ $(document).ready(function(){
 				alert(data);
 			});
 		}
+		window.close();
 	});
 	
 	

@@ -10,7 +10,7 @@ $user_id=startSession();
 <link href="css/tipTip.css" rel="stylesheet" type="text/css">
 <link href="css/redmond/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css">
 <link href="js/src/css/ui.jqgrid.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
+<script type="text/javascript" src="js/jquery-1.5.1.js"></script>
 <script type="text/javascript" src="js/src/grid.loader.js"></script>
 <script type="text/javascript" src="js/jquery.reports.js"></script>
 <script type="text/javascript" src="js/jquery.tipTip.js"></script>

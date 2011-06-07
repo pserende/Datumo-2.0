@@ -12,7 +12,7 @@ $user_id=startSession();
 <link href="css/autoSuggest.css" rel="stylesheet" type="text/css">
 <link href="css/CalendarControl.css" rel="stylesheet" type="text/css">
 
-<script type="text/javascript" src="js/jquery-1.4.4.js"></script>
+<script type="text/javascript" src="js/jquery-1.5.1.js"></script>
 <script type="text/javascript" src="js/src/grid.loader.js"></script>
 <script type="text/javascript" src="js/jquery.reports.js"></script>
 <script type="text/javascript" src="js/CalendarControl.js"></script>
