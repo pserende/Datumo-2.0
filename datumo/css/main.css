@@ -83,6 +83,7 @@ td.results {
     padding-left:0px;
     border:1px solid;
     border-color:#CCC;
+    padding-left:5px;
 }
 
 td.headers{

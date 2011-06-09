@@ -542,7 +542,7 @@ class dispClass{
 		echo "<td colspan=".sizeof($this->header).">";
 		//insert form to be cloned
 		echo "<form style='height:15px;' method=post name=tableman id=tableman>";
-		echo "<table>";
+		echo "<table width=100%>";
 		echo "<tr>";
 		for($i=0;$i<sizeof($this->header);$i++){
 			if($i==0) {$readonly=" disabled ";}

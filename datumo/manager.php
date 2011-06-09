@@ -31,6 +31,7 @@ $user_id = startSession();
 <script type="text/javascript" src="animalhouse/js/jquery.bioterio.js"></script>
 <script type="text/javascript">
 
+
 function updQtt(oper, row){
 	var value = Number($("#quantity_"+row).val());
 	switch (oper){
@@ -141,7 +142,7 @@ if($action){
 //check for action variable after applying a filter
 if(isset($_GET['comeFromAction']) and $_GET['comeFromAction']!="false"){ //if exists call javascript with action notification
 	$comeFromAction=$_GET['comeFromAction'];
-	if($str[strlen($str)-1]!="e"){
+	if($action[strlen($action)-1]=="e"){
 		$comeFromAction.="d";
 	} else {
 		$comeFromAction.="ed";
@@ -309,7 +310,6 @@ if($numRows>0){
 }
 //display main results
 $display->results($table,$r); //call method to display query results
-
 //search for permissions related with new entries in the table
 if($perm->getInsert()) {$display->insert($table,$stype,$nrows,$order);}
 echo "</table>";

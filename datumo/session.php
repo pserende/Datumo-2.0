@@ -29,8 +29,10 @@ function login(){
 	if(isset($_POST['login'])){ $user_login = $_POST['login'];}
 	if(isset($_POST['pass'])){ $user_passwd = $_POST['pass'];}
 	
-	//crypt password
-	$user_passwd = $genObj->cryptPass($user_passwd);
+	if(!isset($_POST['passCrypted']) or $_POST['passCrypted']!='true'){
+		//crypt password
+		$user_passwd = $genObj->cryptPass($user_passwd);
+	}
 	$sql = $db->prepare("SELECT user_id FROM ".$db->getDatabase().".user WHERE user_login='$user_login' AND user_passwd='$user_passwd'");
 	$sql->execute();
 	//echo $sql->rowCount();
